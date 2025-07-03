@@ -39,6 +39,9 @@
       color: red;
       margin-top: 0.5rem;
     }
+    #puzzleSection {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -56,13 +59,30 @@
   <div id="passwordSection">
     <h3>Found the password? Enter it here to continue:</h3>
     <input type="text" id="passwordInput" placeholder="Enter password here">
-    <button onclick="checkPassword()">Unlock Puzzle</button>
+    <button id="unlockBtn">Unlock Puzzle</button>
     <div id="wrong"></div>
   </div>
 
-  <div id="puzzleSection" style="display:none;">
+  <div id="puzzleSection">
     <h2>🧩 BlockBlast Mini Puzzle</h2>
-    <p>(This part can be an image puzzle, emoji code, or mini logic game — right now, just a placeholder)</p>
     <p>🟨⬛⬜ 🟪⬛🟥 🟥⬛🟦</p>
     <p><strong>Congrats!</strong> You solved it.</p>
-    <p style="marg
+    <p style="margin-top: 2rem;">🪟 Your next hint lies in the window sill of Mr. Advik’s room.</p>
+  </div>
+
+  <script>
+    document.getElementById("unlockBtn").addEventListener("click", function () {
+      const input = document.getElementById("passwordInput").value.trim().toLowerCase();
+      const correct = "playfortnitealready";
+
+      if (input === correct) {
+        document.getElementById("passwordSection").style.display = "none";
+        document.getElementById("puzzleSection").style.display = "block";
+      } else {
+        document.getElementById("wrong").textContent = "❌ Incorrect password. Try again!";
+      }
+    });
+  </script>
+
+</body>
+</html>
