@@ -1,222 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Advik's Birthday Challenge</title>
-<style>
-  body {
-    background: #1b262c;
-    color: #bbe1fa;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    padding: 20px;
-    text-align: center;
-    user-select: none;
-  }
-  .screen {
-    display: none;
-  }
-  .active {
-    display: block;
-  }
-  h1 {
-    font-size: 3.5rem;
-    margin-bottom: 0.2em;
-    color: #0f4c75;
-    text-shadow: 0 0 10px #3282b8;
-  }
-  p {
-    font-size: 1.5rem;
-    max-width: 500px;
-    margin: 0 auto 1.5em;
-    color: #bbe1fa;
-  }
-  button {
-    background-color: #3282b8;
-    color: #fff;
-    border: none;
-    padding: 15px 30px;
-    font-size: 1.3rem;
-    border-radius: 12px;
-    cursor: pointer;
-    box-shadow: 0 4px 10px rgba(50, 130, 184, 0.5);
-    transition: background-color 0.3s ease;
-  }
-  button:hover {
-    background-color: #0f4c75;
-  }
-  iframe {
-    width: 100%;
-    max-width: 560px;
-    height: 315px;
-    border: none;
-    margin-bottom: 20px;
-  }
-  input[type="password"] {
-    padding: 10px;
-    font-size: 1.2rem;
-    width: 300px;
-    max-width: 90%;
-    border-radius: 8px;
-    border: none;
-    margin-right: 10px;
-  }
-  #passMessage {
-    color: #f44336;
-    margin-top: 10px;
-  }
-  .block-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 60px);
-    grid-gap: 8px;
-    justify-content: center;
-    margin: 20px auto;
-  }
-  .block {
-    width: 60px;
-    height: 60px;
-    background-color: #3282b8;
-    border-radius: 8px;
-    cursor: pointer;
-    box-shadow: 0 0 5px #0f4c75;
-    transition: background-color 0.3s ease;
-  }
-  .block.active {
-    background-color: #bbe1fa;
-    box-shadow: 0 0 15px #3282b8;
-  }
-  #hint {
-    font-size: 1.5rem;
-    color: #ffd166;
-    text-shadow: 0 0 7px #f4a261;
-    margin-top: 40px;
-  }
-</style>
+  <meta charset="UTF-8">
+  <title>Happy 17th Birthday Advik!</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #fef6e4;
+      color: #333;
+      text-align: center;
+      padding: 2rem;
+    }
+    #greeting {
+      margin-bottom: 2rem;
+    }
+    #video {
+      margin-bottom: 2rem;
+    }
+    #passwordSection, #puzzleSection {
+      margin-top: 2rem;
+    }
+    input[type="text"] {
+      padding: 0.5rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    button {
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: none;
+      background-color: #ffcc00;
+      cursor: pointer;
+      margin-left: 0.5rem;
+    }
+    #wrong {
+      color: red;
+      margin-top: 0.5rem;
+    }
+  </style>
 </head>
 <body>
 
-<!-- 1. Birthday card -->
-<div id="cardScreen" class="screen active">
-  <h1>Happy 17th Birthday, Advik! 🎉</h1>
-  <p>One year closer to adulting. Hope you have fun and a great year ahead!</p>
-  <button id="startBtn">Let’s start 🎮</button>
-</div>
+  <div id="greeting">
+    <h1>🎉 Happy 17th Birthday, Advik! 🎉</h1>
+    <p>One year away from being an adult — hope you have an amazing year ahead!</p>
+  </div>
 
-<!-- 2. Video -->
-<div id="videoScreen" class="screen">
-  <p>Watch the video carefully and find the password hidden inside.</p>
-  <iframe id="video" src="https://www.youtube.com/embed/Z7JskCWjv2I" allowfullscreen></iframe>
-</div>
+  <div id="video">
+    <h2>Watch this special video 👇</h2>
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/Z7JskCWjv2I" frameborder="0" allowfullscreen></iframe>
+  </div>
 
-<!-- 3. Password input -->
-<div id="passwordScreen" class="screen">
-  <input type="password" id="passwordInput" placeholder="Enter password here" />
-  <button id="submitPass">Unlock Puzzle</button>
-  <p id="passMessage"></p>
-</div>
+  <div id="passwordSection">
+    <h3>Found the password? Enter it here to continue:</h3>
+    <input type="text" id="passwordInput" placeholder="Enter password here">
+    <button onclick="checkPassword()">Unlock Puzzle</button>
+    <div id="wrong"></div>
+  </div>
 
-<!-- 4. Puzzle -->
-<div id="puzzleScreen" class="screen">
-  <h3>Block Blast Puzzle</h3>
-  <p>Click all the blocks to blast them!</p>
-  <div class="block-grid" id="blockGrid"></div>
-</div>
-
-<!-- 5. Hint -->
-<div id="hintScreen" class="screen">
-  <p id="hint">Your next hint lies in the window sill of Mr. Advik’s room.</p>
-</div>
-
-<script>
-  const correctPassword = 'playfortnitealready';
-
-  const cardScreen = document.getElementById('cardScreen');
-  const startBtn = document.getElementById('startBtn');
-
-  const videoScreen = document.getElementById('videoScreen');
-  const video = document.getElementById('video');
-
-  const passwordScreen = document.getElementById('passwordScreen');
-  const passwordInput = document.getElementById('passwordInput');
-  const submitPass = document.getElementById('submitPass');
-  const passMessage = document.getElementById('passMessage');
-
-  const puzzleScreen = document.getElementById('puzzleScreen');
-  const blockGrid = document.getElementById('blockGrid');
-
-  const hintScreen = document.getElementById('hintScreen');
-
-  // Utility function to switch screens
-  function showScreen(screen) {
-    [cardScreen, videoScreen, passwordScreen, puzzleScreen, hintScreen].forEach(s => s.classList.remove('active'));
-    screen.classList.add('active');
-  }
-
-  // Start button: show video
-  startBtn.onclick = () => {
-    showScreen(videoScreen);
-    // Reset video by reloading iframe src to allow replay
-    video.src = video.src;
-  };
-
-  // Listen to YouTube API for video end, then show password screen
-  let player;
-  function onYouTubeIframeAPIReady() {
-    player = new YT.Player('video', {
-      events: {
-        'onStateChange': onPlayerStateChange
-      }
-    });
-  }
-
-  function onPlayerStateChange(event) {
-    if (event.data === YT.PlayerState.ENDED) {
-      showScreen(passwordScreen);
-    }
-  }
-
-  submitPass.onclick = () => {
-    if (passwordInput.value.trim().toLowerCase() === correctPassword) {
-      passMessage.textContent = '';
-      showScreen(puzzleScreen);
-      startPuzzle();
-    } else {
-      passMessage.textContent = 'Wrong password, try again!';
-    }
-  };
-
-  function startPuzzle() {
-    blockGrid.innerHTML = '';
-    const totalBlocks = 15;
-    let blastedCount = 0;
-
-    for (let i = 0; i < totalBlocks; i++) {
-      const block = document.createElement('div');
-      block.classList.add('block');
-      block.addEventListener('click', () => {
-        if (!block.classList.contains('active')) {
-          block.classList.add('active');
-          blastedCount++;
-          if (blastedCount === totalBlocks) {
-            puzzleComplete();
-          }
-        }
-      });
-      blockGrid.appendChild(block);
-    }
-  }
-
-  function puzzleComplete() {
-    showScreen(hintScreen);
-  }
-
-  // Load YouTube Iframe API
-  let tag = document.createElement('script');
-  tag.src = "https://www.youtube.com/iframe_api";
-  let firstScriptTag = document.getElementsByTagName('script')[0];
-  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-</script>
-
-</body>
-</html>
+  <div id="puzzleSection" style="display:none;">
+    <h2>🧩 BlockBlast Mini Puzzle</h2>
+    <p>(This part can be an image puzzle, emoji code, or mini logic game — right now, just a placeholder)</p>
+    <p>🟨⬛⬜ 🟪⬛🟥 🟥⬛🟦</p>
+    <p><strong>Congrats!</strong> You solved it.</p>
+    <p style="marg
