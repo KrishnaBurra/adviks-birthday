@@ -63,12 +63,57 @@
     <div id="wrong"></div>
   </div>
 
-  <div id="puzzleSection">
-    <h2>🧩 BlockBlast Mini Puzzle</h2>
-    <p>🟨⬛⬜ 🟪⬛🟥 🟥⬛🟦</p>
-    <p><strong>Congrats!</strong> You solved it.</p>
-    <p style="margin-top: 2rem;">🪟 Your next hint lies in the window sill of Mr. Advik’s room.</p>
+  <div id="puzzleSection" style="display:none;">
+  <h2>🧩 BlockBlast Mini Puzzle</h2>
+  <p>Click the blocks in this order: <strong>Yellow, Purple, Red, Blue</strong></p>
+  <div id="blocks" style="display:flex; justify-content:center; gap:10px; margin-top:1rem;">
+    <div class="block" data-color="yellow" style="width:60px; height:60px; background:#FFD700; cursor:pointer; border-radius:8px;"></div>
+    <div class="block" data-color="purple" style="width:60px; height:60px; background:#800080; cursor:pointer; border-radius:8px;"></div>
+    <div class="block" data-color="red" style="width:60px; height:60px; background:#FF0000; cursor:pointer; border-radius:8px;"></div>
+    <div class="block" data-color="blue" style="width:60px; height:60px; background:#0000FF; cursor:pointer; border-radius:8px;"></div>
   </div>
+  <p id="gameMessage" style="margin-top:1rem; font-weight:bold;"></p>
+</div>
+
+<script>
+  const correctOrder = ['yellow', 'purple', 'red', 'blue'];
+  let clickedOrder = [];
+
+  function resetGame() {
+    clickedOrder = [];
+    document.getElementById('gameMessage').textContent = '';
+    const blocks = document.querySelectorAll('.block');
+    blocks.forEach(block => {
+      block.style.opacity = '1';
+      block.style.pointerEvents = 'auto';
+    });
+  }
+
+  function blockClick(e) {
+    const color = e.target.getAttribute('data-color');
+    const expectedColor = correctOrder[clickedOrder.length];
+
+    if (color === expectedColor) {
+      clickedOrder.push(color);
+      e.target.style.opacity = '0.5';
+      e.target.style.pointerEvents = 'none';
+      if (clickedOrder.length === correctOrder.length) {
+        document.getElementById('gameMessage').textContent = '🎉 Congrats! You solved the puzzle.';
+        setTimeout(() => {
+          document.getElementById('gameMessage').textContent = '🪟 Your next hint lies in the window sill of Mr. Advik’s room.';
+        }, 1500);
+      }
+    } else {
+      document.getElementById('gameMessage').textContent = '❌ Wrong block! Try again.';
+      resetGame();
+    }
+  }
+
+  document.querySelectorAll('.block').forEach(block => {
+    block.addEventListener('click', blockClick);
+  });
+</script>
+
 
   <script>
     document.getElementById("unlockBtn").addEventListener("click", function () {
